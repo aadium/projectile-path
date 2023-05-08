@@ -5,6 +5,10 @@ import tkinter as tk
 import matplotlib.pyplot as plt
 import numpy as np
 
+def path_equation(angleinit, vinit, g):
+    angle_rad = math.radians(angleinit)
+    return (f"y = {math.tan(angle_rad)}x - {g / (2 * (vinit * math.cos(angle_rad)) ** 2)}x^2")
+
 def tflight(angleinit, vinit, g):
     angle_rad = math.radians(angleinit)
     return 2 * ((vinit * math.sin(angle_rad))/g)
@@ -70,11 +74,13 @@ def traj_calc(event):
     global vinit, angleinit
     vinit = float(ent_v.get())
     angleinit = float(ent_a.get())
+    lbl_pe = tk.Label(text="Path equation: " + str(path_equation(angleinit, vinit, g)))
     lbl_ft = tk.Label(text="Flight time (s): " + str(tflight(angleinit, vinit, g)))
     lbl_mh = tk.Label(text="Maximum height (m): " + str(hmax(angleinit, vinit, g)))
     lbl_hr = tk.Label(text="Horizontal range (m): " + str(hrange(angleinit, vinit, g)))
     lbl_mpr = tk.Label(text="Maximum possible range (m): " + str(rangemax(vinit, g)))
     ttk.Separator(orient=HORIZONTAL, style='TSeparator', class_= ttk.Separator, takefocus= 1, cursor='plus').pack(fill=X, padx=10, expand=True)
+    lbl_pe.pack()
     lbl_ft.pack()
     lbl_mh.pack()
     lbl_hr.pack()
