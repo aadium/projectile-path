@@ -22,21 +22,14 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-
       - name: Install PyInstaller
         run: pip install pyinstaller
 
       - name: Build Executable
         run: pyinstaller --onefile trajectory.py
 
-      - name: Create 'output' Branch
-        run: |
-          git checkout -b output
-          git add dist/trajectory
-          git commit -m "Add generated executable"
-          git push origin output
-
-      - name: Clean Up
-        run: |
-          git checkout main
-          git branch -D output
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: executable
+          path: dist/trajectory  # Path to the generated executable
