@@ -1,4 +1,4 @@
-name: Build Executable
+name: Build Executables
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Build Executable
+    name: Build Executables
     runs-on: ubuntu-latest
 
     steps:
@@ -22,17 +22,32 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
+
       - name: Install PyInstaller
         run: pip install pyinstaller
 
-      - name: Build Executable
-        run: pyinstaller --onefile trajectory.py
+      - name: Build Executables
+        run: |
+          pyinstaller --onefile --distpath dist/trajectory-windows trajectory.py
+          pyinstaller --onefile --distpath dist/trajectory-macos trajectory.py
+          pyinstaller --onefile --distpath dist/trajectory-linux trajectory.py
 
-      - name: Upload Artifact
+      - name: Archive Executables
+        run: |
+          cd dist
+          zip -r trajectory-windows.zip trajectory-windows.exe
+          zip -r trajectory-macos.zip trajectory-macos
+          tar czf trajectory-linux.tar.gz trajectory-linux
+
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: executable
-          path: dist/trajectory  # Path to the generated executable
+          name: executables
+          path: |
+            dist/trajectory-windows.zip
+            dist/trajectory-macos.zip
+            dist/trajectory-linux.tar.gz
+          
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
